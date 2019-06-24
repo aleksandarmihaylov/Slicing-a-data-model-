@@ -15,7 +15,7 @@
 <script>
 export default {
   props: ["title"],
-  name: "Bar Chart"
+  name: "BarChart"
 };
 </script>
 

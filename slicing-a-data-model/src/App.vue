@@ -13,9 +13,9 @@
         <div class="col-sm-12 section-two">
           <p>Insight on the selected category</p>
           <ul>
-            <li>Number of cars: 10000</li>
-            <li>Average price: 200.000 DKK</li>
-            <li>Average fuel consumption: 10,40 l/100km</li>
+            <li>Number of cars: {{allCars.length}}</li>
+            <li>Average price: {{averagePrice}} DKK</li>
+            <li>Average fuel consumption: {{averageFuelConsumption}} l/100km</li>
           </ul>
         </div>
       </div>
@@ -31,6 +31,14 @@
                 <td>Price</td>
                 <td>Milage</td>
               </tr>
+              <tr v-for="(car, index) in allCars" :key="index">
+                <td>{{car.id}}</td>
+                <td>{{car.year}}</td>
+                <td>{{car.brand}}</td>
+                <td>{{car.model}}</td>
+                <td>{{car.price}}</td>
+                <td>{{car.milage}}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -42,13 +50,33 @@
 <script>
 export default {
   name: "app",
+  data() {
+    return {
+      allCars: [],
+      averagePrice: 0,
+      averageFuelConsumption: 0
+    };
+  },
   mounted() {
+    function sum(array, prop) {
+      let total = 0;
+      for (let i = 0, _len = array.length; i < _len; i++) {
+        total += Number(array[i][prop]);
+      }
+      return total;
+    }
     fetch("http://localhost:3000/cars")
-      .then(function(response) {
+      .then(response => {
         return response.json();
       })
-      .then(function(myJson) {
-        console.log(myJson);
+      .then(myJson => {
+        this.allCars = myJson;
+        this.averagePrice = (
+          sum(this.allCars, "price") / this.allCars.length
+        ).toFixed(2);
+        this.averageFuelConsumption = (
+          sum(this.allCars, "milage") / this.allCars.length
+        ).toFixed(2);
       });
   }
 };
