@@ -3,34 +3,14 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-6">
-          <div class="bar-chart">
-            <div class="row">
-              <p class="bar-chart-heading">Brand</p>
-            </div>
-            <div class="row">
-              <div class="bar-chart-text col-sm-3">BMW</div>
-              <div class="bar-chart-wrapper col-sm-9">
-                <div class="bar-chart-element"></div>
-              </div>
-            </div>
-          </div>
+          <bar-chart title="Brand"></bar-chart>
         </div>
         <div class="col-sm-6">
-          <div class="bar-chart">
-            <div class="row">
-              <p class="bar-chart-heading">Year</p>
-            </div>
-            <div class="row">
-              <div class="bar-chart-text col-sm-3">2015</div>
-              <div class="bar-chart-wrapper col-sm-9">
-                <div class="bar-chart-element"></div>
-              </div>
-            </div>
-          </div>
+          <bar-chart title="Year"></bar-chart>
         </div>
       </div>
       <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-12 section-two">
           <p>Insight on the selected category</p>
           <ul>
             <li>Number of cars: 10000</li>
@@ -41,7 +21,7 @@
       </div>
       <div class="row">
         <div class="col-sm-12">
-          <table style="width: 100%;" border="1">
+          <table class="car-table" border="1">
             <tbody>
               <tr>
                 <td>Id</td>
@@ -62,10 +42,14 @@
 <script>
 export default {
   name: "app",
-  data() {
-    return {
-      msg: "Welcome to Your Vue.js App"
-    };
+  mounted() {
+    fetch("http://localhost:3000/cars")
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        console.log(myJson);
+      });
   }
 };
 </script>
@@ -117,5 +101,13 @@ a {
   width: 80%;
   height: 30px;
   border: 1px solid black;
+}
+
+.section-two {
+  margin: 50px 0;
+}
+
+.car-table {
+  width: 100%;
 }
 </style>
