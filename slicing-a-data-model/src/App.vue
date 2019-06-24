@@ -1,38 +1,78 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="bar-chart">
+            <div class="row">
+              <p class="bar-chart-heading">Brand</p>
+            </div>
+            <div class="row">
+              <div class="bar-chart-text col-sm-3">BMW</div>
+              <div class="bar-chart-wrapper col-sm-9">
+                <div class="bar-chart-element"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="bar-chart">
+            <div class="row">
+              <p class="bar-chart-heading">Year</p>
+            </div>
+            <div class="row">
+              <div class="bar-chart-text col-sm-3">2015</div>
+              <div class="bar-chart-wrapper col-sm-9">
+                <div class="bar-chart-element"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <p>Insight on the selected category</p>
+          <ul>
+            <li>Number of cars: 10000</li>
+            <li>Average price: 200.000 DKK</li>
+            <li>Average fuel consumption: 10,40 l/100km</li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <table style="width: 100%;" border="1">
+            <tbody>
+              <tr>
+                <td>Id</td>
+                <td>Year</td>
+                <td>Brand</td>
+                <td>Model</td>
+                <td>Price</td>
+                <td>Milage</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'app',
-  data () {
+  name: "app",
+  data() {
     return {
-      msg: 'Welcome to Your Vue.js App'
-    }
+      msg: "Welcome to Your Vue.js App"
+    };
   }
-}
+};
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -40,7 +80,8 @@ export default {
   margin-top: 60px;
 }
 
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
 }
 
@@ -50,11 +91,31 @@ ul {
 }
 
 li {
-  display: inline-block;
   margin: 0 10px;
 }
 
 a {
   color: #42b983;
+}
+
+.bar-chart {
+}
+
+.bar-chart-heading {
+}
+
+.bar-chart-text {
+  text-align: left;
+}
+
+.bar-chart-wrapper {
+  border: 1px solid black;
+}
+
+.bar-chart-element {
+  margin: 10px;
+  width: 80%;
+  height: 30px;
+  border: 1px solid black;
 }
 </style>
