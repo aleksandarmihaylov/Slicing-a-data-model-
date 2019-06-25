@@ -78,8 +78,6 @@ export default {
 
     this.averagePrice = this.getAverage("price");
     this.averageFuelConsumption = this.getAverage("milage");
-
-    // this.filterCars("year", "2015");
   },
   methods: {
     getCars() {
@@ -104,9 +102,25 @@ export default {
     getData(topic) {
       return [...new Set(this.allCars.map(value => value[topic]))].map(
         value => {
-          return { value, width: this.calculateProportion(topic, value) };
+          return {
+            value,
+            width: this.calculateProportion(topic, value),
+            filteredWidth: this.calculateFilteredProportion(topic, value)
+          };
         }
       );
+    },
+    // // This function will get the amount of filtered cars based on a object key -> brand or year fx. and a property -> BMW, 2017 fx.
+    getFilteredCarCountByProperty(objectKey, prop) {
+      return this.filteredCars.filter(item => {
+        return item[objectKey] === prop;
+      }).length;
+    },
+    calculateFilteredProportion(objectKey, prop) {
+      const count = this.getFilteredCarCountByProperty(objectKey, prop);
+      const total = this.allCars.length;
+      const percantage = (count / total) * 100;
+      return percantage.toFixed(2);
     },
     // This function will get the amount of cars based on a object key -> brand or year fx. and a property -> BMW, 2017 fx.
     getCarCountByProperty(objectKey, prop) {

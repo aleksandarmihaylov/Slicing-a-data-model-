@@ -11,7 +11,9 @@
           @click="setActive(index); emitToParent(key)"
           :class="{ 'active': activeIndex === index }"
           :style="{width: key.width + '%'}"
-        ></div>
+        >
+          <div class="filtered-data" :style="{width: key.filteredWidth + '%'}"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -28,6 +30,7 @@ export default {
   },
   methods: {
     selectFilter(key) {
+      console.log(key);
       let title = "";
       let carAttributes = "";
       if (this.title === "Brand") {
@@ -79,5 +82,9 @@ export default {
 
 .active {
   background-color: red;
+}
+
+.filtered-data {
+  background-color: blue;
 }
 </style>
