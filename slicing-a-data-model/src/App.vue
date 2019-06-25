@@ -118,7 +118,7 @@ export default {
     },
     calculateFilteredProportion(objectKey, prop) {
       const count = this.getFilteredCarCountByProperty(objectKey, prop);
-      const total = this.allCars.length;
+      const total = this.filteredCars.length;
       const percantage = (count / total) * 100;
       return percantage.toFixed(2);
     },

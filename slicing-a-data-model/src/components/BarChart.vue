@@ -69,6 +69,7 @@ export default {
 }
 
 .bar-chart-wrapper {
+  z-index: 10;
   border: 1px solid black;
 }
 
@@ -85,6 +86,10 @@ export default {
 }
 
 .filtered-data {
+  height: 100%;
+  margin-left: -2px;
   background-color: blue;
+  z-index: -1;
+  position: relative;
 }
 </style>
