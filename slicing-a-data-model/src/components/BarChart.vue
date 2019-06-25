@@ -8,7 +8,7 @@
       <div class="bar-chart-wrapper col-sm-9">
         <div
           class="bar-chart-element"
-          @click="setActive(index); selectFilter(key)"
+          @click="setActive(index); emitToParent(key)"
           :class="{ 'active': activeIndex === index }"
           :style="{width: key.width + '%'}"
         ></div>
@@ -26,9 +26,6 @@ export default {
       activeIndex: undefined
     };
   },
-  // mounted() {
-  //   console.log(this.setActive());
-  // },
   methods: {
     selectFilter(key) {
       let title = "";
@@ -48,6 +45,9 @@ export default {
     },
     setActive(index) {
       this.activeIndex = index;
+    },
+    emitToParent(key, event) {
+      this.$emit("childToParent", this.selectFilter(key));
     }
   }
 };

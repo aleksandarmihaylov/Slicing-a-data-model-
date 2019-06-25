@@ -3,17 +3,27 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-6">
-          <bar-chart v-if="allCars" title="Brand" :data="getData('brand')"></bar-chart>
+          <bar-chart
+            v-if="allCars"
+            title="Brand"
+            v-on:childToParent="getFilterProperties"
+            :data="getData('brand')"
+          ></bar-chart>
         </div>
         <div class="col-sm-6">
-          <bar-chart v-if="allCars" title="Year" :data="getData('year')"></bar-chart>
+          <bar-chart
+            v-if="allCars"
+            title="Year"
+            v-on:childToParent="getFilterProperties"
+            :data="getData('year')"
+          ></bar-chart>
         </div>
       </div>
       <div class="row">
         <div class="col-sm-12 section-two">
           <p>Insight on the selected category</p>
           <ul>
-            <li>Number of cars: {{allCars.length}}</li>
+            <li>Number of cars: {{filteredCars.length}}</li>
             <li>Average price: {{averagePrice}} DKK</li>
             <li>Average fuel consumption: {{averageFuelConsumption}} l/100km</li>
           </ul>
@@ -31,7 +41,7 @@
                 <td>Price</td>
                 <td>Milage</td>
               </tr>
-              <tr v-for="(car, index) in allCars" :key="index">
+              <tr v-for="(car, index) in filteredCars" :key="index">
                 <td>{{car.id}}</td>
                 <td>{{car.year}}</td>
                 <td>{{car.brand}}</td>
@@ -57,7 +67,8 @@ export default {
       averagePrice: 0,
       averageFuelConsumption: 0,
       brands: [],
-      years: []
+      years: [],
+      filterProperties: {}
     };
   },
   async mounted() {
@@ -68,7 +79,7 @@ export default {
     this.averagePrice = this.getAverage("price");
     this.averageFuelConsumption = this.getAverage("milage");
 
-    this.filterCars("brand", "BMW");
+    // this.filterCars("year", "2015");
   },
   methods: {
     getCars() {
@@ -85,7 +96,9 @@ export default {
     },
     // This method will get the average sum of a given
     getAverage(prop) {
-      return (this.sum(this.allCars, prop) / this.allCars.length).toFixed(2);
+      return (
+        this.sum(this.filteredCars, prop) / this.filteredCars.length
+      ).toFixed(2);
     },
     // This method will return the values -> fx BMW, Mazda, 2017 and the ammount of cars in a percantage for the width
     getData(topic) {
@@ -112,7 +125,15 @@ export default {
       this.filteredCars = this.allCars.filter(item => {
         return item[objectKey] === prop;
       });
-      // console.log(this.filteredCars);
+      this.averagePrice = this.getAverage("price");
+      this.averageFuelConsumption = this.getAverage("milage");
+    },
+    getFilterProperties(value) {
+      this.filterProperties = value;
+      this.filterCars(
+        this.filterProperties.title,
+        this.filterProperties.carAttributes
+      );
     }
   }
 };
