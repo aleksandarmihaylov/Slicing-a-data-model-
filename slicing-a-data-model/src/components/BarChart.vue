@@ -6,7 +6,12 @@
     <div class="row" v-for="(key, index) in data" :key="index">
       <div class="bar-chart-text col-sm-3">{{key.value}}</div>
       <div class="bar-chart-wrapper col-sm-9">
-        <div class="bar-chart-element" :style="{width: key.width + '%'}"></div>
+        <div
+          class="bar-chart-element"
+          @click="setActive(index); selectFilter(key)"
+          :class="{ 'active': activeIndex === index }"
+          :style="{width: key.width + '%'}"
+        ></div>
       </div>
     </div>
   </div>
@@ -14,10 +19,37 @@
 
 <script>
 export default {
-  props: ["title", "data", "allCars", "filteredCars"],
+  props: ["title", "data"],
   name: "BarChart",
-  mounted() {},
-  methods: {}
+  data() {
+    return {
+      activeIndex: undefined
+    };
+  },
+  // mounted() {
+  //   console.log(this.setActive());
+  // },
+  methods: {
+    selectFilter(key) {
+      let title = "";
+      let carAttributes = "";
+      if (this.title === "Brand") {
+        title = "brand";
+      } else if (this.title === "Year") {
+        title = "year";
+      }
+      if (key) {
+        carAttributes = key.value;
+      }
+      return {
+        title: title,
+        carAttributes: carAttributes
+      };
+    },
+    setActive(index) {
+      this.activeIndex = index;
+    }
+  }
 };
 </script>
 
@@ -43,5 +75,9 @@ export default {
   max-width: 100%;
   height: 30px;
   border: 1px solid black;
+}
+
+.active {
+  background-color: red;
 }
 </style>

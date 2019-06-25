@@ -3,22 +3,10 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-6">
-          <bar-chart
-            v-if="allCars"
-            title="Brand"
-            :filteredCars="filteredCars"
-            :allCars="allCars"
-            :data="getData('brand')"
-          ></bar-chart>
+          <bar-chart v-if="allCars" title="Brand" :data="getData('brand')"></bar-chart>
         </div>
         <div class="col-sm-6">
-          <bar-chart
-            v-if="allCars"
-            title="Year"
-            :filteredCars="filteredCars"
-            :allCars="getCars"
-            :data="getData('year')"
-          ></bar-chart>
+          <bar-chart v-if="allCars" title="Year" :data="getData('year')"></bar-chart>
         </div>
       </div>
       <div class="row">
@@ -75,9 +63,12 @@ export default {
   async mounted() {
     const cars = await this.getCars();
     this.allCars = cars;
+    this.filteredCars = this.allCars;
 
     this.averagePrice = this.getAverage("price");
     this.averageFuelConsumption = this.getAverage("milage");
+
+    this.filterCars("brand", "BMW");
   },
   methods: {
     getCars() {
@@ -116,6 +107,12 @@ export default {
       const total = this.allCars.length;
       const percantage = (count / total) * 100;
       return percantage.toFixed(2);
+    },
+    filterCars(objectKey, prop) {
+      this.filteredCars = this.allCars.filter(item => {
+        return item[objectKey] === prop;
+      });
+      // console.log(this.filteredCars);
     }
   }
 };
