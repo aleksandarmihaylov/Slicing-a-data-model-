@@ -3,10 +3,10 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-6">
-          <bar-chart title="Brand"></bar-chart>
+          <bar-chart title="Brand" :data="getData('brand')"></bar-chart>
         </div>
         <div class="col-sm-6">
-          <bar-chart title="Year"></bar-chart>
+          <bar-chart title="Year" :data="getData('year')"></bar-chart>
         </div>
       </div>
       <div class="row">
@@ -54,30 +54,44 @@ export default {
     return {
       allCars: [],
       averagePrice: 0,
-      averageFuelConsumption: 0
+      averageFuelConsumption: 0,
+      brands: [],
+      years: []
     };
   },
   mounted() {
     function sum(array, prop) {
       let total = 0;
       for (let i = 0, _len = array.length; i < _len; i++) {
-        total += Number(array[i][prop]);
+        total += parseFloat(array[i][prop]);
       }
       return total;
     }
-    fetch("http://localhost:3000/cars")
-      .then(response => {
+    this.getCars().then(cars => {
+      this.allCars = cars;
+      this.averagePrice = (
+        sum(this.allCars, "price") / this.allCars.length
+      ).toFixed(2);
+      this.averageFuelConsumption = (
+        sum(this.allCars, "milage") / this.allCars.length
+      ).toFixed(2);
+    });
+  },
+  methods: {
+    getCars() {
+      return fetch("http://localhost:3000/cars").then(function(response) {
         return response.json();
-      })
-      .then(myJson => {
-        this.allCars = myJson;
-        this.averagePrice = (
-          sum(this.allCars, "price") / this.allCars.length
-        ).toFixed(2);
-        this.averageFuelConsumption = (
-          sum(this.allCars, "milage") / this.allCars.length
-        ).toFixed(2);
       });
+    },
+    getAveragePrice() {
+      return (sum(this.allCars, "price") / this.allCars.length).toFixed(2);
+    },
+    getAverageFuelConsumption() {
+      return (sum(this.allCars, "milage") / this.allCars.length).toFixed(2);
+    },
+    getData(prop) {
+      return [...new Set(this.allCars.map(item => item[prop]))];
+    }
   }
 };
 </script>
@@ -110,29 +124,9 @@ a {
   color: #42b983;
 }
 
-.bar-chart {
-}
-
-.bar-chart-heading {
-}
-
-.bar-chart-text {
-  text-align: left;
-}
-
-.bar-chart-wrapper {
-  border: 1px solid black;
-}
-
-.bar-chart-element {
-  margin: 10px;
-  width: 80%;
-  height: 30px;
-  border: 1px solid black;
-}
-
 .section-two {
   margin: 50px 0;
+  text-align: left;
 }
 
 .car-table {
