@@ -12,7 +12,11 @@
           :class="{ 'active': activeIndex === index }"
           :style="{width: key.width + '%'}"
         >
-          <div class="filtered-data" :style="{width: key.filteredWidth + '%'}"></div>
+          <div
+            v-if="shouldShowFilteredData"
+            class="filtered-data"
+            :style="{width: key.filteredWidth + '%'}"
+          ></div>
         </div>
       </div>
     </div>
@@ -21,7 +25,7 @@
 
 <script>
 export default {
-  props: ["title", "data"],
+  props: ["title", "data", "shouldShowFilteredData"],
   name: "BarChart",
   data() {
     return {
@@ -30,7 +34,6 @@ export default {
   },
   methods: {
     selectFilter(key) {
-      console.log(key);
       let title = "";
       let carAttributes = "";
       if (this.title === "Brand") {

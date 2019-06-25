@@ -7,6 +7,7 @@
             v-if="allCars"
             title="Brand"
             v-on:childToParent="getFilterProperties"
+            :shouldShowFilteredData="wasFiltered"
             :data="getData('brand')"
           ></bar-chart>
         </div>
@@ -15,6 +16,7 @@
             v-if="allCars"
             title="Year"
             v-on:childToParent="getFilterProperties"
+            :shouldShowFilteredData="wasFiltered"
             :data="getData('year')"
           ></bar-chart>
         </div>
@@ -68,7 +70,8 @@ export default {
       averageFuelConsumption: 0,
       brands: [],
       years: [],
-      filterProperties: {}
+      filterProperties: {},
+      wasFiltered: false
     };
   },
   async mounted() {
@@ -143,6 +146,7 @@ export default {
       this.averageFuelConsumption = this.getAverage("milage");
     },
     getFilterProperties(value) {
+      this.wasFiltered = true;
       this.filterProperties = value;
       this.filterCars(
         this.filterProperties.title,
