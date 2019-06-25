@@ -4,9 +4,9 @@
       <p class="bar-chart-heading">{{title}}</p>
     </div>
     <div class="row" v-for="(key, index) in data" :key="index">
-      <div class="bar-chart-text col-sm-3">{{key}}</div>
+      <div class="bar-chart-text col-sm-3">{{key.value}}</div>
       <div class="bar-chart-wrapper col-sm-9">
-        <div class="bar-chart-element"></div>
+        <div class="bar-chart-element" :style="{width: key.width + '%'}"></div>
       </div>
     </div>
   </div>
@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  props: ["title", "data"],
+  props: ["title", "data", "allCars", "filteredCars"],
   name: "BarChart",
   mounted() {},
   methods: {}
@@ -39,7 +39,7 @@ export default {
 
 .bar-chart-element {
   margin: 10px;
-  padding: 0 20px;
+  padding: 0 2px;
   max-width: 100%;
   height: 30px;
   border: 1px solid black;

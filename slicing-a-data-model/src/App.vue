@@ -3,10 +3,22 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-6">
-          <bar-chart title="Brand" :data="getData('brand')"></bar-chart>
+          <bar-chart
+            v-if="allCars"
+            title="Brand"
+            :filteredCars="filteredCars"
+            :allCars="allCars"
+            :data="getData('brand')"
+          ></bar-chart>
         </div>
         <div class="col-sm-6">
-          <bar-chart title="Year" :data="getData('year')"></bar-chart>
+          <bar-chart
+            v-if="allCars"
+            title="Year"
+            :filteredCars="filteredCars"
+            :allCars="getCars"
+            :data="getData('year')"
+          ></bar-chart>
         </div>
       </div>
       <div class="row">
@@ -53,29 +65,19 @@ export default {
   data() {
     return {
       allCars: [],
+      filteredCars: [],
       averagePrice: 0,
       averageFuelConsumption: 0,
       brands: [],
       years: []
     };
   },
-  mounted() {
-    function sum(array, prop) {
-      let total = 0;
-      for (let i = 0, _len = array.length; i < _len; i++) {
-        total += parseFloat(array[i][prop]);
-      }
-      return total;
-    }
-    this.getCars().then(cars => {
-      this.allCars = cars;
-      this.averagePrice = (
-        sum(this.allCars, "price") / this.allCars.length
-      ).toFixed(2);
-      this.averageFuelConsumption = (
-        sum(this.allCars, "milage") / this.allCars.length
-      ).toFixed(2);
-    });
+  async mounted() {
+    const cars = await this.getCars();
+    this.allCars = cars;
+
+    this.averagePrice = this.getAverage("price");
+    this.averageFuelConsumption = this.getAverage("milage");
   },
   methods: {
     getCars() {
@@ -83,14 +85,37 @@ export default {
         return response.json();
       });
     },
-    getAveragePrice() {
-      return (sum(this.allCars, "price") / this.allCars.length).toFixed(2);
+    sum(array, prop) {
+      let total = 0;
+      for (let i = 0, _len = array.length; i < _len; i++) {
+        total += parseFloat(array[i][prop]);
+      }
+      return total;
     },
-    getAverageFuelConsumption() {
-      return (sum(this.allCars, "milage") / this.allCars.length).toFixed(2);
+    // This method will get the average sum of a given
+    getAverage(prop) {
+      return (this.sum(this.allCars, prop) / this.allCars.length).toFixed(2);
     },
-    getData(prop) {
-      return [...new Set(this.allCars.map(item => item[prop]))];
+    // This method will return the values -> fx BMW, Mazda, 2017 and the ammount of cars in a percantage for the width
+    getData(topic) {
+      return [...new Set(this.allCars.map(value => value[topic]))].map(
+        value => {
+          return { value, width: this.calculateProportion(topic, value) };
+        }
+      );
+    },
+    // This function will get the amount of cars based on a object key -> brand or year fx. and a property -> BMW, 2017 fx.
+    getCarCountByProperty(objectKey, prop) {
+      return this.allCars.filter(item => {
+        return item[objectKey] === prop;
+      }).length;
+    },
+    // This fucntion will calcuate the percentage which will be used to present the data through the width in the BarChart component
+    calculateProportion(objectKey, prop) {
+      const count = this.getCarCountByProperty(objectKey, prop);
+      const total = this.allCars.length;
+      const percantage = (count / total) * 100;
+      return percantage.toFixed(2);
     }
   }
 };
