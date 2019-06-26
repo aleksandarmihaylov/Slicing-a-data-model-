@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="container">
+    <div v-if="allCars.length > 0" class="container">
       <div class="row">
         <div class="col-sm-6">
           <bar-chart
@@ -55,6 +55,9 @@
           </table>
         </div>
       </div>
+    </div>
+    <div v-else>
+      <img src="./assets/Ripple-1.5s-200px.gif" alt>
     </div>
   </div>
 </template>
