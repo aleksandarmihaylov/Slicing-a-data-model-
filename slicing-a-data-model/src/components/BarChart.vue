@@ -8,9 +8,8 @@
       <div class="bar-chart-wrapper col-sm-9">
         <div
           class="bar-chart-element"
-          @click="setActive(index); emitToParent(key)"
-          :class="{ 'active': activeIndex === index }"
-          :style="{width: key.width + '%'}"
+          @click="emitToParent(key)"
+          :style="{width: key.width + '%', backgroundColor: (key.filteredWidth == 100 ? 'red' : 'transparent')}"
         >
           <div
             v-if="shouldShowFilteredData"
@@ -48,9 +47,6 @@ export default {
         title: title,
         carAttributes: carAttributes
       };
-    },
-    setActive(index) {
-      this.activeIndex = index;
     },
     emitToParent(key, event) {
       this.$emit("childToParent", this.selectFilter(key));
