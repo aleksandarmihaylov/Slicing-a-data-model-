@@ -3,12 +3,12 @@
     <div class="row">
       <p class="bar-chart-heading">{{title}}</p>
     </div>
-    <div class="row" v-for="(key, index) in data" :key="index">
+    <div class="row" v-for="(key, index) in objectValues" :key="index">
       <div class="bar-chart-text col-sm-3">{{key.value}}</div>
       <div class="bar-chart-wrapper col-sm-9">
         <div
           class="bar-chart-element"
-          @click="emitToParent(key)"
+          @click="emitToParent(key.value)"
           :style="{width: key.width + '%', backgroundColor: (key.filteredWidth == 100 ? 'red' : 'transparent')}"
         >
           <div
@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  props: ["title", "data", "shouldShowFilteredData"],
+  props: ["title", "objectValues", "shouldShowFilteredData"],
   name: "BarChart",
   data() {
     return {
@@ -32,7 +32,10 @@ export default {
     };
   },
   methods: {
-    selectFilter(key) {
+    emitToParent(filterCondition, event) {
+      this.$emit("childToParent", this.selectFilter(filterCondition));
+    },
+    selectFilter(filterCondition) {
       let title = "";
       let carAttributes = "";
       if (this.title === "Brand") {
@@ -40,28 +43,19 @@ export default {
       } else if (this.title === "Year") {
         title = "year";
       }
-      if (key) {
-        carAttributes = key.value;
+      if (filterCondition) {
+        carAttributes = filterCondition;
       }
       return {
         title: title,
         carAttributes: carAttributes
       };
-    },
-    emitToParent(key, event) {
-      this.$emit("childToParent", this.selectFilter(key));
     }
   }
 };
 </script>
 
 <style scoped>
-.bar-chart {
-}
-
-.bar-chart-heading {
-}
-
 .bar-chart-text {
   text-align: center;
   padding: 18px 0 0 0;

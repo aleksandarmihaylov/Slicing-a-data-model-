@@ -6,18 +6,18 @@
           <bar-chart
             v-if="allCars"
             title="Brand"
-            v-on:childToParent="getFilterProperties"
+            v-on:childToParent="getFilterConditions"
             :shouldShowFilteredData="wasFiltered"
-            :data="getData('brand')"
+            :objectValues="getObjectValues('brand')"
           ></bar-chart>
         </div>
         <div class="col-sm-6">
           <bar-chart
             v-if="allCars"
             title="Year"
-            v-on:childToParent="getFilterProperties"
+            v-on:childToParent="getFilterConditions"
             :shouldShowFilteredData="wasFiltered"
-            :data="getData('year')"
+            :objectValues="getObjectValues('year')"
           ></bar-chart>
         </div>
       </div>
@@ -83,11 +83,68 @@ export default {
     this.averageFuelConsumption = this.getAverage("milage");
   },
   methods: {
+    // Getting all the cars from the API
     getCars() {
       return fetch("http://localhost:3000/cars").then(function(response) {
         return response.json();
       });
     },
+    // This method will return the values -> fx BMW, Mazda, 2017 and the ammount of cars in a percantage for the width
+    getObjectValues(slicingAxis) {
+      return [...new Set(this.allCars.map(value => value[slicingAxis]))].map(
+        value => {
+          return {
+            value,
+            width: this.calculateProportion(slicingAxis, value),
+            filteredWidth: this.calculateFilteredProportion(slicingAxis, value)
+          };
+        }
+      );
+    },
+    // This function will get the amount of cars based on a object key -> brand or year fx. and a property -> BMW, 2017 fx.
+    getCarCountByProperty(objectProperty, objectValue) {
+      return this.allCars.filter(item => {
+        return item[objectProperty] === objectValue;
+      }).length;
+    },
+    // This fucntion will calcuate the percentage which will be used to present the data through the width in the BarChart component
+    calculateProportion(objectProperty, objectValue) {
+      const count = this.getCarCountByProperty(objectProperty, objectValue);
+      const total = this.allCars.length;
+      const percantage = (count / total) * 100;
+      return percantage.toFixed(2);
+    },
+    // // This function will get the amount of filtered cars based on a object key -> brand or year fx. and a property -> BMW, 2017 fx.
+    getFilteredCarCountByProperty(objectProperty, objectValue) {
+      return this.filteredCars.filter(item => {
+        return item[objectProperty] === objectValue;
+      }).length;
+    },
+    calculateFilteredProportion(objectProperty, objectValue) {
+      const count = this.getFilteredCarCountByProperty(
+        objectProperty,
+        objectValue
+      );
+      const total = this.filteredCars.length;
+      const percantage = (count / total) * 100;
+      return percantage.toFixed(2);
+    },
+    getFilterConditions(values) {
+      this.wasFiltered = true;
+      this.filterProperties = values;
+      this.filterCars(
+        this.filterProperties.title,
+        this.filterProperties.carAttributes
+      );
+    },
+    filterCars(slicingAxis, objectValue) {
+      this.filteredCars = this.allCars.filter(item => {
+        return item[slicingAxis] === objectValue;
+      });
+      this.averagePrice = this.getAverage("price");
+      this.averageFuelConsumption = this.getAverage("milage");
+    },
+    // helper sum function
     sum(array, prop) {
       let total = 0;
       for (let i = 0, _len = array.length; i < _len; i++) {
@@ -100,58 +157,6 @@ export default {
       return (
         this.sum(this.filteredCars, prop) / this.filteredCars.length
       ).toFixed(2);
-    },
-    // This method will return the values -> fx BMW, Mazda, 2017 and the ammount of cars in a percantage for the width
-    getData(topic) {
-      return [...new Set(this.allCars.map(value => value[topic]))].map(
-        value => {
-          return {
-            value,
-            width: this.calculateProportion(topic, value),
-            filteredWidth: this.calculateFilteredProportion(topic, value)
-          };
-        }
-      );
-    },
-    // // This function will get the amount of filtered cars based on a object key -> brand or year fx. and a property -> BMW, 2017 fx.
-    getFilteredCarCountByProperty(objectKey, prop) {
-      return this.filteredCars.filter(item => {
-        return item[objectKey] === prop;
-      }).length;
-    },
-    calculateFilteredProportion(objectKey, prop) {
-      const count = this.getFilteredCarCountByProperty(objectKey, prop);
-      const total = this.filteredCars.length;
-      const percantage = (count / total) * 100;
-      return percantage.toFixed(2);
-    },
-    // This function will get the amount of cars based on a object key -> brand or year fx. and a property -> BMW, 2017 fx.
-    getCarCountByProperty(objectKey, prop) {
-      return this.allCars.filter(item => {
-        return item[objectKey] === prop;
-      }).length;
-    },
-    // This fucntion will calcuate the percentage which will be used to present the data through the width in the BarChart component
-    calculateProportion(objectKey, prop) {
-      const count = this.getCarCountByProperty(objectKey, prop);
-      const total = this.allCars.length;
-      const percantage = (count / total) * 100;
-      return percantage.toFixed(2);
-    },
-    filterCars(objectKey, prop) {
-      this.filteredCars = this.allCars.filter(item => {
-        return item[objectKey] === prop;
-      });
-      this.averagePrice = this.getAverage("price");
-      this.averageFuelConsumption = this.getAverage("milage");
-    },
-    getFilterProperties(value) {
-      this.wasFiltered = true;
-      this.filterProperties = value;
-      this.filterCars(
-        this.filterProperties.title,
-        this.filterProperties.carAttributes
-      );
     }
   }
 };
